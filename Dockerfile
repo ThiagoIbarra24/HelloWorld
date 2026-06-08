@@ -1,3 +1,11 @@
-FROM tomcat:9.0
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-COPY . /usr/local/tomcat/webapps/ROOT
+WORKDIR /app
+
+COPY . .
+
+RUN mvn clean package
+
+FROM tomcat:10.1-jdk17
+
+COPY --from=build /app/target/HelloWorld1-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
